@@ -10,7 +10,7 @@ WIDTH = 512
 HEIGHT = 512
 IMAGE_SIZE = (WIDTH, HEIGHT)
 MODEL_PATH = r'.\model'
-PATH_CORPUS = r"C:/Users/Artem/obscene_words_ru/profane_corpus.csv"
+PATH_CORPUS = r".\profane_corpus.csv"
 URL_IMAGE = r'https://mass-images.pro/files/preview/5/12/cf5a5bfa30bd11bd032baa19457504a3.jpg?1616155802690'
 
 
