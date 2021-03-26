@@ -1,9 +1,4 @@
-import pandas as pd
-
-
-def obscene_filter(path_corpus, input_string):
-    profane_corpus = pd.read_csv(path_corpus)
-    profane_corpus = set(profane_corpus['Words'])
+def obscene_filter(profane_corpus, input_string):
     list_for_check = input_string.split(' ')
     output_str = ''
     for word in list_for_check:

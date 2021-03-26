@@ -1,8 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from PIL import ImageFile
-from PIL import Image
-import requests
+
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 

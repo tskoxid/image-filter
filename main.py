@@ -4,15 +4,18 @@ import requests
 from image_classification import nudity_check
 from text_extraction import preprocessing_image, extract_text
 from filter_mata import obscene_filter
+import pandas as pd
 
 
 WIDTH = 512
 HEIGHT = 512
 IMAGE_SIZE = (WIDTH, HEIGHT)
 MODEL_PATH = r'.\model'
-PATH_CORPUS = r".\profane_corpus.csv"
 URL_IMAGE = r'https://gorod.tomsk.ru/uploads/32813/1240403255/72434_ya_vas_schas_vyiebu_i_vyisushu.jpg'
+PATH_CORPUS = r".\profane_corpus.csv"
 
+corpus = pd.read_csv(PATH_CORPUS)
+corpus = set(corpus['Words'])
 
 if __name__ == '__main__':
     opened_image = Image.open(requests.get(URL_IMAGE, stream=True).raw)
@@ -25,6 +28,6 @@ if __name__ == '__main__':
         text_from_image = text_from_image.replace('?', '').replace('.', '').replace('  ', ' ').lower()[:-2]
         print("Find text in image :", text_from_image, '\n')
 
-        text_after_filter = obscene_filter(PATH_CORPUS, text_from_image)
+        text_after_filter = obscene_filter(corpus, text_from_image)
 
         print("Text after filter: ", text_after_filter)
