@@ -8,12 +8,6 @@ Pillow == 8.1.0
 # C:\Users\Artem\image-filter\main.py: 2
 numpy == 1.20.1
 
-# C:\Users\Artem\image-filter\text_extraction.py: 2
-opencv_python == 4.5.1.48
-
-# C:\Users\Artem\image-filter\filter_mata.py: 1
-pandas == 1.2.2
-
 # C:\Users\Artem\image-filter\text_extraction.py: 1
 pytesseract == 0.3.7
 

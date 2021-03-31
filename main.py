@@ -1,33 +1,36 @@
-from PIL import Image
 import numpy as np
 import requests
-from image_classification import nudity_check
-from text_extraction import preprocessing_image, extract_text
-from filter_mata import obscene_filter
-import pandas as pd
+from tensorflow.python.client import device_lib
+import tensorflow as tf
+from image_scripts.image_classification import nudity_check
+from image_scripts.text_extraction import extract_text
+from image_scripts.filter_mata import obscene_filter
+from PIL import Image
 
 
-WIDTH = 512
-HEIGHT = 512
+WIDTH: int = 512
+HEIGHT: int = 512
+MODEL_PATH: str = r'.\model'
 IMAGE_SIZE = (WIDTH, HEIGHT)
-MODEL_PATH = r'.\model'
 URL_IMAGE = r'https://gorod.tomsk.ru/uploads/32813/1240403255/72434_ya_vas_schas_vyiebu_i_vyisushu.jpg'
-PATH_CORPUS = r".\profane_corpus.csv"
 
-corpus = pd.read_csv(PATH_CORPUS)
-corpus = set(corpus['Words'])
+
+def get_available_devices():
+    local_device_protos = device_lib.list_local_devices()
+    return [x.name for x in local_device_protos]
+
 
 if __name__ == '__main__':
     opened_image = Image.open(requests.get(URL_IMAGE, stream=True).raw)
-    predict_class = nudity_check(MODEL_PATH, opened_image, WIDTH, HEIGHT)
-    print("Изображение прошло проверку\n" if predict_class[0] == 0 else "Изображение заблокировано!")
+
+    get_available_devices()
+
+    with tf.device('/cpu:0'):
+        predict_class = nudity_check(MODEL_PATH, opened_image, WIDTH, HEIGHT)
+
     if predict_class[0] == 0:
-        gray_image = preprocessing_image(np.asarray(opened_image))
-        text_from_image = extract_text(gray_image)
-        text_from_image = text_from_image.replace('\n', ' ').replace('  ', ' ').replace('        ', '')
-        text_from_image = text_from_image.replace('?', '').replace('.', '').replace('  ', ' ').lower()[:-2]
-        print("Find text in image :", text_from_image, '\n')
-
-        text_after_filter = obscene_filter(corpus, text_from_image)
-
-        print("Text after filter: ", text_after_filter)
+        text_from_image = extract_text(np.asarray(opened_image))
+        text_after_filter = obscene_filter(text_from_image)
+        print("Изображение содержит мат\n" if not text_after_filter else "Изображение прошло проверку")
+    else:
+        print("Изображение заблокировано!\n")
