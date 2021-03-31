@@ -1,6 +1,16 @@
-# Nudity detection and word extraction from image.
+## Nudity detection and word extraction from image.
 1. Файл image_classification.py классифицирует изображение с помощью зафайнтюненой модели InceptionV3.
-2. Файл text_extraction.py извлекает текст с помощью tesseract-ocr и openCV. 
-3. Файл filter_mata.py проверяет текст на наличие мата. Если находит, то заменяет слово по типу данной маски: word -> w***
+2. Файл text_extraction.py извлекает текст с помощью tesseract-ocr. 
+3. Файл filter_mata.py проверяет текст на наличие мата. Если находит, то возвращает False.
 
 Для работы нужно добавить папку с моделью. Скачать можно по ссылке: https://www.dropbox.com/sh/q9wo1gg6bsaau68/AAAB8FR7Ekrjnr7j-tTiqJ8ta?dl=0
+
+## Модель:
+1. После сравнения была выбрана предобученная модель InceptionV3, так как VGG16, ResNet показали меньшую точность и большее потребление памяти.
+2. Модель была зафайнтюнена на 2.5к изображений каждого класса(Нетральный и Обнаженка)
+3. Точность модели на тестовых данных: 92.6 процента. Confusion Matrix прикреплена ниже.
+![Confusion Maztix](https://github.com/tskoxid/image-filter/blob/main/data/cm.JPG)
+4. Модель потребляет 4 гб оперативной памяти.
+5. Время инференса 1 изображения   --- 1.1912572383880615 seconds ---
+6. Время инференса 1 батча(16)     --- 1.7843890190124512 seconds ---
+7. Время инференса 63 батча(1004)  --- 94.29106140136719 seconds ---
