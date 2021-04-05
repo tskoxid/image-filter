@@ -1,36 +1,43 @@
-import numpy as np
-import requests
-from tensorflow.python.client import device_lib
 import tensorflow as tf
-from image_scripts.image_classification import nudity_check
-from image_scripts.text_extraction import extract_text
-from image_scripts.filter_mata import obscene_filter
-from PIL import Image
+import pytesseract
+from PIL import ImageFile
+from csv import reader
+from image_scripts.classes import ImageClassification
 
-
-WIDTH: int = 512
-HEIGHT: int = 512
 MODEL_PATH: str = r'.\model'
-IMAGE_SIZE = (WIDTH, HEIGHT)
-URL_IMAGE = r'https://gorod.tomsk.ru/uploads/32813/1240403255/72434_ya_vas_schas_vyiebu_i_vyisushu.jpg'
+PATH_TESSERACT: str = r'C:\Users\Artem\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+PATH_CORPUS: str = r".\data\profane_corpus.csv"
+pytesseract.pytesseract.tesseract_cmd = PATH_TESSERACT
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+
+model_keras = tf.keras.models.load_model(MODEL_PATH)
+corpus_list = []
+with open(PATH_CORPUS, 'r', encoding='utf8') as f:
+    csv_reader = reader(f)
+    for row in csv_reader:
+        corpus_list.append(row[0])
+corpus_words: set = set(corpus_list)
 
 
-def get_available_devices():
-    local_device_protos = device_lib.list_local_devices()
-    return [x.name for x in local_device_protos]
+def main(url_image, model=model_keras, corpus=None):
+    if corpus is None:
+        corpus = corpus_words
+    with tf.device('/cpu:0'):
+        new_examaple = ImageClassification(url_image, model, corpus)
+        opened_image = new_examaple.open_image()
+        normalized_image = new_examaple.normalized_image(opened_image)
+        if new_examaple.classify_image(normalized_image):
+            text = new_examaple.extract_text(opened_image)
+            filtered_text = new_examaple.preprocessing_text(text)
+            result = new_examaple.obscene_filter(filtered_text)
+            print("Изображение содержит мат" if not result else "Изображение прошло проверку")
+        else:
+            print("Изображение содержит обнаженку")
 
 
 if __name__ == '__main__':
-    opened_image = Image.open(requests.get(URL_IMAGE, stream=True).raw)
-
-    get_available_devices()
-
-    with tf.device('/cpu:0'):
-        predict_class = nudity_check(MODEL_PATH, opened_image, WIDTH, HEIGHT)
-
-    if predict_class[0] == 0:
-        text_from_image = extract_text(np.asarray(opened_image))
-        text_after_filter = obscene_filter(text_from_image)
-        print("Изображение содержит мат\n" if not text_after_filter else "Изображение прошло проверку")
-    else:
-        print("Изображение заблокировано!\n")
+    url_image_list = ['https://i.pinimg.com/564x/ff/12/c4/ff12c41417f4d15220628479754ede42.jpg',
+                      'https://i.pinimg.com/564x/0b/76/24/0b7624609162e8336908df59231735c5.jpg',
+                      'https://i.pinimg.com/564x/ef/25/22/ef2522bab80dc1f9291d1c159a346ce1.jpg']
+    for URL_IMAGE in url_image_list:
+        main(URL_IMAGE)
