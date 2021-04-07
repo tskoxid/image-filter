@@ -1,3 +1,8 @@
+## TODO:
+1. Развернуть сервис на Linux
+2. Прописать pytesseract.pytesseract.tesseract_cmd для Linux
+3. Поместить сервис в docker
+
 ## Nudity detection and word extraction from image.
 На вход подается ссылка на изображение, далее:
 1. Изображение скачивается и нормализуется
