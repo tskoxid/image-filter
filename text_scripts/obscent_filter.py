@@ -30,7 +30,7 @@ class ObscentFilter:
         list_for_check = input_string.split()
         output_str = ''
         for word in list_for_check:
-            if word in self.corpus:
+            if self.preprocessing_text(word) in self.corpus:
                 output_str += word.replace(word, word[0] + (len(word) - 1) * '*') + " "
             else:
                 output_str += word + ' '
