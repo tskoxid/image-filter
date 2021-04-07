@@ -3,9 +3,8 @@ import pytesseract
 from PIL import ImageFile
 from csv import reader
 from image_scripts.classes import ImageClassification
+from text_scripts.obscent_filter import ObscentFilter
 import time
-import io
-import requests
 
 
 PATH_TESSERACT: str = r'C:\Users\Artem\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
@@ -13,23 +12,22 @@ PATH_CORPUS: str = r".\data\profane_corpus.csv"
 pytesseract.pytesseract.tesseract_cmd = PATH_TESSERACT
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-corpus_list = []
+corpus_list: list = []
 with open(PATH_CORPUS, 'r', encoding='utf8') as f:
     csv_reader = reader(f)
     for row in csv_reader:
         corpus_list.append(row[0])
-corpus_words: set = set(corpus_list)
+corpus_set: set = set(corpus_list)
 
 
-def main(url_image):
+def main(url_image: str):
     with tf.device('/cpu:0'):
-        response = requests.get(url_image)
-        image_bytes = io.BytesIO(response.content)
+        image_bytes = new_examaple.download_image_from_url(url_image)
         opened_image = new_examaple.open_image(image_bytes)
         normalized_image = new_examaple.normalized_image(opened_image)
-        if new_examaple.classify_image(normalized_image):
+        if new_examaple.classify_single_image(normalized_image):
             text = new_examaple.extract_text_from_image(opened_image)
-            filtered_text = new_examaple.preprocessing_text(text)
+            filtered_text = ObscentFilter.preprocessing_text(text)
             result = new_examaple.obscene_filter(filtered_text)
             print("Изображение содержит мат" if not result else "Изображение прошло проверку")
         else:
@@ -55,7 +53,7 @@ if __name__ == '__main__':
 
     start_time = time.time()
 
-    new_examaple = ImageClassification(corpus_words, model_path=r'.\model')
+    new_examaple = ImageClassification(corpus_set, model_path=r'.\model')
 
     print(f"Init model {time.time()-start_time} секунд")
 
@@ -63,3 +61,11 @@ if __name__ == '__main__':
         start_time = time.time()
         main(URL_IMAGE)
         print(time.time() - start_time, '\n')
+
+    text_list = ['Я, БЛЯТЬ, РАЗОЧАРОВАНА, ИДИ НАХУЙ', 'потеряйся нахуй', 'ВСЕ БУДЕТ ТАК, КАК Я ХОЧУ']
+    obscent_filter = ObscentFilter(corpus_set)
+
+    for row in text_list:
+        text_row = obscent_filter.preprocessing_text(row)
+        print("Строка до фильтра:", row)
+        print("Строка после фильтра:", obscent_filter.obscene_filter(text_row), '\n')
