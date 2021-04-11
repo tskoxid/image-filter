@@ -10,7 +10,7 @@ import time
 PATH_TESSERACT: str = r'C:\Users\Artem\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 PATH_TESSERACT_LINUX: str = r'/usr/bin/tesseract'
 PATH_CORPUS: str = r".\data\profane_corpus.csv"
-pytesseract.pytesseract.tesseract_cmd = PATH_TESSERACT
+pytesseract.pytesseract.tesseract_cmd = PATH_TESSERACT_LINUX
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 corpus_list: list = []
