@@ -1,5 +1,5 @@
 import numpy as np
-import numpy.typing as npt
+# import numpy.typing as npt
 import pytesseract
 import tensorflow as tf
 import typing
@@ -29,7 +29,7 @@ class ImageClassification():
         image = Image.open(image_bytes)
         return image
 
-    def normalized_image(self, image: npt.ArrayLike):
+    def normalized_image(self, image):
         image_resize = image.resize((self.__WIDTH, self.__HEIGHT))
         image_arr = np.asarray(image_resize) / 255
         mean = np.mean(image_arr)

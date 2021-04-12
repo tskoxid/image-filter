@@ -6,7 +6,7 @@ Pillow == 8.1.0
 
 # C:\Users\Artem\image-filter\image_classification.py: 2
 # C:\Users\Artem\image-filter\main.py: 2
-numpy == 1.20.1
+numpy == 1.19.2
 
 # C:\Users\Artem\image-filter\text_extraction.py: 1
 pytesseract == 0.3.7
