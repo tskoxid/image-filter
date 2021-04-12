@@ -6,7 +6,6 @@ RUN apt-get install tesseract-ocr-rus
 
 RUN tesseract --list-langs
 RUN tesseract -v
-RUN ls -a /usr/share/tesseract-ocr/4.00/tessdata/
 
 COPY ./ /workdir
 
