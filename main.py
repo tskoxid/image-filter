@@ -1,4 +1,3 @@
-import tensorflow as tf
 import pytesseract
 from PIL import ImageFile
 from csv import reader
@@ -26,18 +25,9 @@ with open(PATH_CORPUS, 'r', encoding='utf8') as f:
 corpus_set: set = set(corpus_list)
 
 
-def main(url_image: str):
-    with tf.device('/cpu:0'):
-        image_bytes = new_examaple.download_image_from_url(url_image)
-        opened_image = new_examaple.open_image(image_bytes)
-        normalized_image = new_examaple.normalized_image(opened_image)
-        if new_examaple.classify_single_image(normalized_image):
-            text = new_examaple.extract_text_from_image(opened_image)
-            filtered_text = ObscentFilter.preprocessing_text(text)
-            result = new_examaple.obscene_filter(filtered_text)
-            print("Изображение содержит мат" if not result else "Изображение прошло проверку")
-        else:
-            print("Изображение содержит обнаженку")
+def main(cls, url_image: str):
+    result = cls.pipline_filter(url_image)
+    return result
 
 
 if __name__ == '__main__':
@@ -65,7 +55,7 @@ if __name__ == '__main__':
 
     for URL_IMAGE in url_image_list:
         start_time = time.time()
-        main(URL_IMAGE)
+        main(new_examaple, URL_IMAGE)
         print(time.time() - start_time, '\n')
 
     text_list = ['Я, БЛЯТЬ, РАЗОЧАРОВАНА, ИДИ НАХУЙ', 'потеряйся нахуй', 'ВСЕ БУДЕТ ТАК, КАК Я ХОЧУ', 'ПошёЛ ,НахУй']
