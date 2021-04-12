@@ -13,8 +13,8 @@ PATH_CORPUS: str = r".\data\profane_corpus.csv"
 pytesseract.pytesseract.tesseract_cmd = PATH_TESSERACT
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-tar = tarfile.open("models.tar.gz")
-tar.extractall()
+tar = tarfile.open("data/models.tar.gz")
+tar.extractall("data/")
 tar.close()
 
 corpus_list: list = []
@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     start_time = time.time()
 
-    new_examaple = ImageClassification(corpus_set, model_path=r'.\models')
+    new_examaple = ImageClassification(corpus_set, model_path=r'data/models')
 
     print(f"Init model {time.time()-start_time} секунд")
 
