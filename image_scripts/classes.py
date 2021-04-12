@@ -8,7 +8,7 @@ import io
 from PIL import Image
 
 
-class ImageClassification():
+class ImageClassification:
     __WIDTH: int = 512
     __HEIGHT: int = 512
     __CHANNELS: int = 3

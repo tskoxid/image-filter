@@ -5,13 +5,18 @@ from csv import reader
 from image_scripts.classes import ImageClassification
 from text_scripts.obscent_filter import ObscentFilter
 import time
+import tarfile
 
 
-# PATH_TESSERACT: str = r'C:\Users\Artem\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
-# PATH_TESSERACT_LINUX: str = '/usr/bin/tesseract'
-PATH_CORPUS: str = r"./data/profane_corpus.csv"
-# pytesseract.pytesseract.tesseract_cmd = PATH_TESSERACT_LINUX
+PATH_TESSERACT: str = r'C:\Users\Artem\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+PATH_TESSERACT_LINUX: str = r'/usr/bin/tesseract'
+PATH_CORPUS: str = r".\data\profane_corpus.csv"
+pytesseract.pytesseract.tesseract_cmd = PATH_TESSERACT
 ImageFile.LOAD_TRUNCATED_IMAGES = True
+
+tar = tarfile.open("models.tar.gz")
+tar.extractall()
+tar.close()
 
 corpus_list: list = []
 with open(PATH_CORPUS, 'r', encoding='utf8') as f:
@@ -54,7 +59,7 @@ if __name__ == '__main__':
 
     start_time = time.time()
 
-    new_examaple = ImageClassification(corpus_set, model_path=r'model/')
+    new_examaple = ImageClassification(corpus_set, model_path=r'.\models')
 
     print(f"Init model {time.time()-start_time} секунд")
 
@@ -70,8 +75,3 @@ if __name__ == '__main__':
         text_row = obscent_filter.obscene_filter(row)
         print("Строка до фильтра:", row)
         print("Строка после фильтра:", obscent_filter.obscene_filter(text_row), '\n')
-
-
-
-
-
