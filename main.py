@@ -5,15 +5,16 @@ from image_scripts.classes import ImageClassification
 from text_scripts.obscent_filter import ObscentFilter
 import time
 import tarfile
+import os
 
 
 PATH_TESSERACT: str = r'C:\Users\Artem\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 PATH_TESSERACT_LINUX: str = r'/usr/bin/tesseract'
-PATH_CORPUS: str = r".\data\profane_corpus.csv"
+PATH_CORPUS: str = os.path.join('data', 'profane_corpus.csv')
 pytesseract.pytesseract.tesseract_cmd = PATH_TESSERACT
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-tar = tarfile.open("data/models.tar.gz")
+tar = tarfile.open(os.path.join('data', 'models.tar.gz'))
 tar.extractall("data/")
 tar.close()
 
@@ -49,7 +50,7 @@ if __name__ == '__main__':
 
     start_time = time.time()
 
-    new_examaple = ImageClassification(corpus_set, model_path=r'data/models')
+    new_examaple = ImageClassification(corpus_set, model_path=os.path.join('data', 'models'))
 
     print(f"Init model {time.time()-start_time} секунд")
 
@@ -58,7 +59,7 @@ if __name__ == '__main__':
         main(new_examaple, URL_IMAGE)
         print(time.time() - start_time, '\n')
 
-    text_list = ['Я, БЛЯТЬ, РАЗОЧАРОВАНА, ИДИ НАХУЙ', 'потеряйся нахуй', 'ВСЕ БУДЕТ ТАК, КАК Я ХОЧУ', 'ПошёЛ ,НахУй']
+    text_list = ['Я, БЛЯТЬ, РАЗОЧАРОВАНА, ИДИ НАХУЙ', 'потеряйся нахуй', 'ВСЕ БУДЕТ ТАК, КАК Я ХОЧУ', 'УёБоК ,НахУй']
     obscent_filter = ObscentFilter(corpus_set)
 
     for row in text_list:
