@@ -8,10 +8,9 @@ import tarfile
 import os
 
 
-PATH_TESSERACT: str = r'C:\Users\Artem\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 PATH_TESSERACT_LINUX: str = r'/usr/bin/tesseract'
 PATH_CORPUS: str = os.path.join('data', 'profane_corpus.csv')
-pytesseract.pytesseract.tesseract_cmd = PATH_TESSERACT
+pytesseract.pytesseract.tesseract_cmd = PATH_TESSERACT_LINUX
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 tar = tarfile.open(os.path.join('data', 'models.tar.gz'))
