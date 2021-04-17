@@ -64,7 +64,7 @@ class ImageClassification:
             if self.classify_single_image(normalized_image):
                 text = self.extract_text_from_image(opened_image)
                 filtered_text = ObscentFilter.preprocessing_text(text)
-                result = self.obscene_filter(filtered_text)
+                result = self.obscene_filter(filtered_text.split())
                 print("Изображение содержит мат" if not result else "Изображение прошло проверку")
             else:
                 print("Изображение содержит обнаженку")
