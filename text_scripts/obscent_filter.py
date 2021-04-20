@@ -28,10 +28,11 @@ class ObscentFilter:
 
     def obscene_filter(self, input_string: str):
         list_for_check = input_string.split()
-        output_str = ''
+        # output_str = ''
         for word in list_for_check:
             if self.preprocessing_text(word) in self.corpus:
-                output_str += word.replace(word, word[0] + (len(word) - 1) * '*') + " "
-            else:
-                output_str += word + ' '
-        return output_str
+                return 0
+                # output_str += word.replace(word, word[0] + (len(word) - 1) * '*') + " "
+                # output_str += word + ' '
+        return 5
+        # return output_str

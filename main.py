@@ -3,10 +3,10 @@ from PIL import ImageFile
 from csv import reader
 from image_scripts.classes import ImageClassification
 from text_scripts.obscent_filter import ObscentFilter
+from text_scripts.score_bred import CheckSpells
 import time
 import tarfile
 import os
-
 
 PATH_TESSERACT_LINUX: str = r'/usr/bin/tesseract'
 PATH_CORPUS: str = os.path.join('data', 'profane_corpus.csv')
@@ -25,9 +25,11 @@ with open(PATH_CORPUS, 'r', encoding='utf8') as f:
 corpus_set: set = set(corpus_list)
 
 
-def main(cls, url_image: str):
-    result = cls.pipline_filter(url_image)
-    return result
+def main(url_image: str):
+    start_time = time.time()
+    new_examaple.pipline_filter(url_image)
+    end_time = time.time() - start_time
+    print(f'----%.3f seconds---- \n' % end_time)
 
 
 if __name__ == '__main__':
@@ -47,21 +49,24 @@ if __name__ == '__main__':
                       'https://i.redd.it/c1r4p1au26t01.jpg',
                       'https://i.redd.it/sjrhm72wn1i11.jpg']
 
-    start_time = time.time()
-
     new_examaple = ImageClassification(corpus_set, model_path=os.path.join('data', 'models'))
 
-    print(f"Init model {time.time()-start_time} секунд")
-
     for URL_IMAGE in url_image_list:
-        start_time = time.time()
-        main(new_examaple, URL_IMAGE)
-        print(time.time() - start_time, '\n')
+        main(URL_IMAGE)
 
-    text_list = ['Я, БЛЯТЬ, РАЗОЧАРОВАНА, ИДИ НАХУЙ', 'потеряйся нахуй', 'ВСЕ БУДЕТ ТАК, КАК Я ХОЧУ', 'УёБоК ,НахУй']
+    text_list = ['Я, БЛЯТЬ, РАЗОЧАРОВАНА, ИДИ НАХУЙ', 'ВСЕ БУДЕТ ТАК, КАК Я ХОЧУ', 'УеБоК ,НахУй',
+                 'ятутпишу буссвезнуюхрень имненестыдно', 'вфиваф фваршцузгардфылвои!@ыва фвыоислфысилофывси',
+                 'Здарова почаны, чо по митингу, у нас залупа, нужно решить пару тасок']
+
     obscent_filter = ObscentFilter(corpus_set)
+    russian = CheckSpells()
 
-    for row in text_list:
-        text_row = obscent_filter.obscene_filter(row)
-        print("Строка до фильтра:", row)
-        print("Строка после фильтра:", obscent_filter.obscene_filter(text_row), '\n')
+    for sentence in text_list:
+        score_bred = russian.pipeline(obscent_filter.preprocessing_text(sentence))
+        score_obscent = obscent_filter.obscene_filter(sentence)
+        print(f"\nScore бреда: {score_bred}")
+        print(f"Score мата: {score_obscent}")
+        print(sentence)
+        if score_obscent+score_bred < 7:
+            print("Ты пишешь что-то не то, пожалуйста проверь что ты написал. \n")
+        # print(f"Строка после фильтра: {text_row} \n")
