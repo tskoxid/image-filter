@@ -2,13 +2,12 @@ import pytesseract
 from PIL import ImageFile
 from csv import reader
 from image_scripts.classes import ImageClassification
-from text_scripts.obscent_filter import ObscentFilter
-from text_scripts.score_bred import CheckSpells
 import time
 import tarfile
 import os
 
 PATH_TESSERACT_LINUX: str = r'/usr/bin/tesseract'
+PATH_TESSERACT_LINUX: str = r'C:\Users\Artem\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 PATH_CORPUS: str = os.path.join('data', 'profane_corpus.csv')
 pytesseract.pytesseract.tesseract_cmd = PATH_TESSERACT_LINUX
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -53,20 +52,3 @@ if __name__ == '__main__':
 
     for URL_IMAGE in url_image_list:
         main(URL_IMAGE)
-
-    text_list = ['Я, БЛЯТЬ, РАЗОЧАРОВАНА, ИДИ НАХУЙ', 'ВСЕ БУДЕТ ТАК, КАК Я ХОЧУ', 'УеБоК ,НахУй',
-                 'ятутпишу буссвезнуюхрень имненестыдно', 'вфиваф фваршцузгардфылвои!@ыва фвыоислфысилофывси',
-                 'Здарова почаны, чо по митингу, у нас залупа, нужно решить пару тасок']
-
-    obscent_filter = ObscentFilter(corpus_set)
-    russian = CheckSpells()
-
-    for sentence in text_list:
-        score_bred = russian.pipeline(obscent_filter.preprocessing_text(sentence))
-        score_obscent = obscent_filter.obscene_filter(sentence)
-        print(f"\nScore бреда: {score_bred}")
-        print(f"Score мата: {score_obscent}")
-        print(sentence)
-        if score_obscent+score_bred < 7:
-            print("Ты пишешь что-то не то, пожалуйста проверь что ты написал. \n")
-        # print(f"Строка после фильтра: {text_row} \n")

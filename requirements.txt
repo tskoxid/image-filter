@@ -9,5 +9,3 @@ requests == 2.25.1
 tensorflow == 2.4.1
 
 pyspellchecker == 0.6.2
-
-pdfminer == 20191125

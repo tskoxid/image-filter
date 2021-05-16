@@ -1,5 +1,4 @@
 import numpy as np
-from text_scripts.obscent_filter import ObscentFilter
 import pytesseract
 import tensorflow as tf
 import typing
@@ -48,8 +47,15 @@ class ImageClassification:
         text = pytesseract.image_to_string(image_arr, lang='rus', config=r"--oem 3 --psm 6")
         return text
 
-    def obscene_filter(self, filtered_text: typing.List[str]):
-        for word in filtered_text:
+    def obscene_filter(self, input_text: str):
+        input_text = input_text.lower().replace('\n', ' ')
+        input_text = input_text.split(' ')
+        filtered_list = []
+        for word in input_text:
+            filtered_text = [character for character in word if character.isalnum()]
+            filtered_list.append("".join(filtered_text))
+
+        for word in filtered_list:
             if word in self.corpus:
                 return False
             else:
@@ -63,8 +69,7 @@ class ImageClassification:
             normalized_image = self.normalized_image(opened_image)
             if self.classify_single_image(normalized_image):
                 text = self.extract_text_from_image(opened_image)
-                filtered_text = ObscentFilter.preprocessing_text(text)
-                result = self.obscene_filter(filtered_text.split())
+                result = self.obscene_filter(text)
                 print("Изображение содержит мат" if not result else "Изображение прошло проверку")
             else:
                 print("Изображение содержит обнаженку")
